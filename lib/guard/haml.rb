@@ -9,7 +9,8 @@ module Guard
 
     def initialize(watchers = [], options = {})
       @options = {
-        :notifications => true
+        :notifications => true,
+        :render_scope => Object.new
       }.merge options
       super(watchers, @options)
     end
@@ -52,7 +53,7 @@ module Guard
       begin
         content = File.new(file).read
         engine  = ::Haml::Engine.new(content, (@options[:haml_options] || {}))
-        engine.render
+        engine.render(@options[:render_scope])
       rescue StandardError => error
         message = "HAML compilation failed!\nError: #{error.message}"
         ::Guard::UI.error message
